@@ -4,17 +4,29 @@
 #   continuations, open classes, singleton classes, blocks and being funny!
 
 class Integer # The bottles
+  # create an Instance method that lowers number of bottles by 1
+  #def drink; self + 1; end
   def drink; self - 1; end
 end
 
+# creates an instance of Object, named 'song', and opens up a singleton class
 class << song = nil
-  attr_accessor :wall
+# other ways to do this
+#1) song = nil
+#   class << song
 
+#2) class song
+  attr_accessor :wall # defines :wall symbol and allows it to be accessed from outside of class
+
+  # defines the function 'bottles()'
   def bottles
+    # if @bottles == 0,then return "no more", otherwise return the num bottles as a string 
     (@bottles.zero? ? "no more" : @bottles).to_s <<
+      # append " bottle" and if @bottles != 1, append an 's' to the end
       " bottle" << ("s" unless @bottles == 1).to_s
   end
   
+  # define the function 'of(bottles)'
   def of(bottles)
     @bottles = bottles
     (class << self; self; end).module_eval do
@@ -38,4 +50,4 @@ class << song = nil
 
 end
 
-callcc { |song.wall| song.of(99) }.sing { |beer| beer.drink }
+callcc { |song.wall| song.of(15) }.sing { |beer| beer.drink }
