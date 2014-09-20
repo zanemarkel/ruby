@@ -93,6 +93,8 @@ class << song = nil
 		end
 		#@bottles = step[@bottles] # Equivalent to step.call(@bottles) --> jumps back up to the 'sing()' method with @bottles as the argument
 		puts "#{bottles} of text on the screen."
+		# Pause for 1 second after printing out each stanza, for "dramatic effect"
+		sleep(1)
 	
 		$remaining = $total_iterations - @bottles
 		# Print a newline and execute 'wall.call' continuation if 'step' is not a method (i.e. as long as it's a number and not :buy)
