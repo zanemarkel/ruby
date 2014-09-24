@@ -15,12 +15,10 @@
 
 
 # 99 Bottles of beer, in Ruby
-# By Victor Borja, Sep 14, 2006
-# This one shows my favorite Ruby features:
-#   continuations, open classes, singleton classes, blocks and being funny!
+# Modified by Aaron Fleming and Zane Markel
 
 class Integer # The bottles
-  # create an Instance method that lowers number of bottles by 1
+  # create an Instance method that increases remaining by between 1 and 10
 	def drink
 		#$increment = ( rand(10) + 1)
 		#self + $increment
@@ -66,6 +64,8 @@ class << song = nil
   
   
 	def sing(&step)# '&step', the block { |beer| beer.drink }, is converted to a Proc object, which is assigned to the parameter.
+                                 # FROM ZANE: Actually, I think having '&step' in the function declaration makes sing take step as a block.
+                                 # My reasoning is based off of http://www.skorks.com/2013/04/ruby-ampersand-parameter-demystified/
 				 #    Used this way, the value acessible insude 'sing()' when 'step' is referenced is a number (<= initial number
 				 #	  specified). However, when 'step' == 0, 'step = method :buy' gets executed, changing 'step' into the method ':buy'.
 				 #	  When this happens, 'sing()' does 
