@@ -24,7 +24,8 @@ class Integer # The bottles
 		#self + $increment
 		
 		# Only allow a random number that does not result in the specified end point being exceeded
-		self + ($remaining < 10 ? rand($remaining) + 1 : rand(10) + 1)
+                remaining = $total_iterations - self
+		self + (remaining < 10 ? rand(remaining) + 1 : rand(10) + 1)
 	end
 	#def drink; self - 1; end
 end
@@ -64,13 +65,16 @@ class << song = nil
   
   
 	def sing(&step)# '&step', the block { |beer| beer.drink }, is converted to a Proc object, which is assigned to the parameter.
-                                 # FROM ZANE: Actually, I think having '&step' in the function declaration makes sing take step as a block.
-                                 # My reasoning is based off of http://www.skorks.com/2013/04/ruby-ampersand-parameter-demystified/
-				 #    Used this way, the value acessible insude 'sing()' when 'step' is referenced is a number (<= initial number
-				 #	  specified). However, when 'step' == 0, 'step = method :buy' gets executed, changing 'step' into the method ':buy'.
-				 #	  When this happens, 'sing()' does 
+                     # FROM ZANE: Actually, I think having '&step' in the function declaration makes sing take step as a block.
+                     # My reasoning is based off of http://www.skorks.com/2013/04/ruby-ampersand-parameter-demystified/
+                     # Used this way, the value acessible insude 'sing()' when 'step' is referenced is a number (<= initial number
+             #specified). However, when 'step' == 0, 'step = method :buy' gets executed, changing 'step' into the method ':buy'.
+                     # When this happens, 'sing()' does 
 		# Capitalize the first bottles in case bottles == 'no more'
-		puts "#{bottles.capitalize} of text on the screen, #{bottles} of text." 
+		#puts "#{bottles.capitalize} of text on the screen, #{bottles} of text." 
+		#$outf.puts "#{bottles.capitalize} of text on the screen, #{bottles} of text." 
+		$output << "#{bottles.capitalize} of text on the screen, #{bottles} of text.\n" 
+                    
 		#if @bottles.zero?
 		tmp = @bottles
 		@bottles = step[@bottles]
@@ -84,30 +88,64 @@ class << song = nil
 		#puts ""
 		if @bottles >= $total_iterations #100
 			#print "Go to the store buy some more, "
-			print "Print #{@bottles - tmp} out, stand up and shout, "
+			#print "Print #{@bottles - tmp} out, stand up and shout, "
+			#$outf.write( "Print #{@bottles - tmp} out, stand up and shout, " )
+			$output << "Print #{@bottles - tmp} out, stand up and shout, "
 			# Setting 'step' to be the method :buy will cause the :buy function to be called once and then end the program, rather than 
 			#   executing 'wall.call()' again and decrementing the number of bottles.
 			step = method :buy
 		else
-			print "Print #{@bottles - tmp} out, stand up and shout, "
+			#print "Print #{@bottles - tmp} out, stand up and shout, "
+			#$outf.write( "Print #{@bottles - tmp} out, stand up and shout, " )
+			$output << "Print #{@bottles - tmp} out, stand up and shout, "
 		end
 		#@bottles = step[@bottles] # Equivalent to step.call(@bottles) --> jumps back up to the 'sing()' method with @bottles as the argument
-		puts "#{bottles} of text on the screen."
+		#puts "#{bottles} of text on the screen."
+		#$outf.puts "#{bottles} of text on the screen."
+		$output << "#{bottles} of text on the screen.\n"
 		# Pause for 1 second after printing out each stanza, for "dramatic effect"
-		sleep(1)
+                #if STDOUT == ostream
+                #    sleep(1)
+                #end
 	
-		$remaining = $total_iterations - @bottles
 		# Print a newline and execute 'wall.call' continuation if 'step' is not a method (i.e. as long as it's a number and not :buy)
 		#   Uses 'or' instead of 'and' because 'puts()' always returns nil and would shortcircuit, preventing the 'wall.call()'
-		puts "" or wall.call unless step.kind_of? Method
+		#puts "" or $outf.puts "" or wall.call unless step.kind_of? Method
+		($output << "\n") and wall.call unless step.kind_of? Method
 	end
+
 end
 
-print "How many lines? "
+def print_results(ostream, finishstr)
+    linecnt = 0
+    $output.each_line do |line|
+        # If it's the end of a stanza and ostream is stdout, then sleep
+        if STDOUT == ostream and (linecnt % 3 == 0) # Each stanza is 3 lines
+            sleep(1)
+        end
+        ostream.write(line)
+        linecnt += 1
+    end
+
+    # This line marks the end of the thread
+    STDERR.write("#{finishstr} finished\n")
+end
+
+# Open the global out.txt
+$outf = File.open("out.txt", "w")
+
+# Prompt for
+puts "How many lines? "
 STDOUT.flush
 $total_iterations = gets.chomp.to_i
-$remaining = $total_iterations
 #$total_iterations = STDIN.read
 puts "User entered #{$total_iterations}"
 # Call the Bottles of Beer song, starting with 15 bottles on the wall
-callcc { |song.wall| song.of(1) }.sing { |beer| beer.drink }
+$output = ''
+callcc { |song.wall| song.of(1) }.sing{ |beer| beer.drink }
+t1 = Thread.new{print_results(STDOUT, 'Screen')}
+t2 = Thread.new{print_results($outf, 'File')}
+t1.join
+t2.join
+
+$outf.close
