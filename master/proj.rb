@@ -1,19 +1,3 @@
-### Parts A-F
-
-
-# ---------------------------------------------------
-#
-#   DOES ALBING WANT US TO GO OVER 100 BECAUSE WE
-#   PICK A RANDOM NUMBER OF BOTTLES AND CAN EXCEED
-#   100 ON THE LAST CALL? OR DOES HE WANT US TO 
-#   SOMEHOW LOWER THE RANGE OF THE RANDOM NUMBER
-#   GENERATOR SO THAT IT WILL ONLY PICK NUMBERS 
-#   THAT WILL NOT ALLOW THE TOTAL TO EXCEED 100???
-#
-# ----------------------------------------------------
-
-
-
 # 99 Bottles of beer, in Ruby
 # Modified by Aaron Fleming and Zane Markel
 
