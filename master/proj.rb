@@ -84,14 +84,6 @@ end
       #if @bottles.zero?
       tmp = @bottles
       @bottles = step[@bottles]
-      #puts ""
-      #puts "tmp = #{tmp}"
-      #puts "@bottles = #{@bottles}"
-      #puts "step[tmp] = #{step[tmp]}"
-      #puts "step[@bottles] = #{step[@bottles]}"
-      #puts "step[@bottles] = #{step[@bottles]}"
-      #puts "step[@bottles] = #{step[@bottles]}"
-      #puts ""
 
       # The number of lines to be printed.
       numprinted = prime_fact(@bottles - tmp)
@@ -147,8 +139,6 @@ $outf = File.open("out.txt", "w")
 puts "How many lines? "
 STDOUT.flush
 $total_iterations = gets.chomp.to_i
-#$total_iterations = STDIN.read
-puts "User entered #{$total_iterations}"
 # Call the Bottles of Beer song, starting with 15 bottles on the wall
 $output = ''
 callcc { |song.wall| song.of(1) }.sing{ |beer| beer.drink }
